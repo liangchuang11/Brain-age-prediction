@@ -58,11 +58,15 @@ from sklearn.preprocessing import MinMaxScaler
     loaded_model.load_model('xgboost_model.model')
 
     # Create SHAP interpreter
-    explainer = shap.Explainer(loaded_model)
+    background = shap.sample(X_train, 1000)
 
-    # Explain model predictions
+    explainer = shap.TreeExplainer(
+        loaded_model,
+        data=background,
+        feature_perturbation="interventional"
+    )
+
     shap_values = explainer.shap_values(X_test)
-
     # Print SHAP value
     print(shap_values)
 
